@@ -1,0 +1,30 @@
+load("@build_bazel_rules_nodejs//:index.bzl", "nodejs_binary", "npm_package_bin")
+load("@npm//@bazel/typescript:index.bzl", "ts_project")
+load(":my_rule.bzl", "my_rule")
+
+npm_package_bin(
+    name = "npm_package_bin",
+    tool = ":tool",
+    outs = ["output.txt"],
+)
+
+my_rule(
+    name = "run_node",
+)
+
+nodejs_binary(
+    name = "tool",
+    entry_point = ":foo.ts",
+    data = [":lib"],
+    link_workspace_root = True,
+)
+
+ts_project(
+    name = "lib",
+    srcs = [
+        "foo.ts",
+        "bar.ts",
+        "baz.ts",
+    ],
+    tsconfig = ":tsconfig.json",
+)
